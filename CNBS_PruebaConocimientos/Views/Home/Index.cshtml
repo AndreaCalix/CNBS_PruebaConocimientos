@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Prueba de Conocimientos CNBS";
+}
+
+<h2>Selecciona una fecha:</h2>
+<form id="formDatos" method="get">
+    <label for="fecha">Fechas:</label>
+    <select id="fecha" name="fecha">
+        <option value="2021-06-20">2021-06-20</option>
+        <option value="2021-06-21">2021-06-21</option>
+        <option value="2021-06-22">2021-06-22</option>
+        <option value="2021-06-23">2021-06-23</option>
+    </select>
+    <br><br>
+    <input type="submit" value="Enviar">
+</form>
+
+<body>
+    <h2>Datos</h2>
+    <input type="text" id="busqueda" placeholder="Buscar por Nddtimmioe">
+    <button onclick="buscarDatos()">Buscar</button>
+    <br>
+    <br>
+    <div id="resultados"></div>
+</body>
+
+
+<h2>Resultados</h2>
+<div id="resultados"></div>
+
+<script>
+    document.getElementById('formDatos').addEventListener('submit', async function (e) {
+        e.preventDefault(); // Evitar el envío del formulario por defecto
+
+        const fecha = document.getElementById('fecha').value;
+        const response = await fetch(`@Url.Action("ProbarConexion", "Api")?fecha=${fecha}`);
+
+        if (response.ok) {
+            const datos = await response.json();
+            console.log(datos);  // Imprime el JSON recibido para verificar su estructura
+            mostrarDatos(datos);
+        } else {
+            document.getElementById('resultados').innerHTML = "Error al obtener datos.";
+        }
+    });
+
+    let datosOriginales = []; // Variable global para almacenar los datos originales
+
+    function mostrarDatos(datos) {
+        datosOriginales = datos; // Guarda los datos originales
+        generarTabla(datos); // Genera la tabla inicial sin filtrar
+    }
+
+    function generarTabla(datos) {
+        // Genera la estructura de la tabla
+        let html = `
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ART - ID</th>
+                        <th>ART - Descripción</th>
+                        <th>DDT - CDDT Agente</th>
+                        <th>DDT - CDDT Grupo</th>
+                        <th>DDT - Nddtimmioe</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+        datos.forEach(item => {
+            const articulos = item.ART;
+            if (Array.isArray(articulos) && articulos.length > 0) {
+                articulos.forEach(articulo => {
+                    const artId = articulo.iddt ?? 'N/A';
+                    const artDesc = articulo.cartdesc ?? 'N/A';
+                    const ddt = item.DDT || {};
+                    const ddtCddtage = ddt.cddtage ?? 'N/A';
+                    const ddtCddtagr = ddt.cddtagr ?? 'N/A';
+                    const ddtNddtimmioe = ddt.nddtimmioe ?? 'N/A';
+
+                    html += `
+                        <tr>
+                            <td>${artId}</td>
+                            <td>${artDesc}</td>
+                            <td>${ddtCddtage}</td>
+                            <td>${ddtCddtagr}</td>
+                            <td>${ddtNddtimmioe}</td>
+                        </tr>`;
+                });
+            }
+        });
+
+        html += '</tbody></table>';
+        document.getElementById('resultados').innerHTML = html;
+    }
+
+    function buscarDatos() {
+        const busqueda = document.getElementById('busqueda').value.toLowerCase();
+        const resultadosFiltrados = datosOriginales.filter(item => {
+            const ddt = item.DDT || {};
+            return ddt.nddtimmioe?.toLowerCase().includes(busqueda);
+        });
+
+        generarTabla(resultadosFiltrados);
+    }
+
+</script>

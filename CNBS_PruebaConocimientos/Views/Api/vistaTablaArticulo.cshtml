@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Artículos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Artículos</h1>
+        <table id="tablaArticulos" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <!-- Agrega aquí otros encabezados que necesites -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las filas se generarán aquí -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Hacer una llamada AJAX para obtener los datos JSON
+            $.ajax({
+                url: '@Url.Action("TuAccion", "ApiController")', // Cambia "TuControlador" al nombre de tu controlador
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Recorrer cada elemento en el JSON
+                    $.each(data, function (index, item) {
+                        // Iterar sobre el array ART
+                        $.each(item.ART, function (i, articulo) {
+                            // Agregar una fila a la tabla
+                            $('#tablaArticulos tbody').append(
+                                '<tr>' +
+                                '<td>' + articulo.Iddt + '</td>' +
+                                '<td>' + articulo.Cartdesc + '</td>' +
+                                // Agrega aquí otras celdas que necesites
+                                '</tr>'
+                            );
+                        });
+                    });
+                },
+                error: function (error) {
+                    console.log("Error al cargar los datos:", error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
