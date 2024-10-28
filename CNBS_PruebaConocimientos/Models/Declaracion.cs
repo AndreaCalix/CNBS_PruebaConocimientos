@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CNBS_PruebaConocimientos.Models // Asegúrate de que el namespace es correcto
+namespace CNBS_PruebaConocimientos.Models 
 {
     public class Declaracion
     {
@@ -43,9 +43,9 @@ namespace CNBS_PruebaConocimientos.Models // Asegúrate de que el namespace es c
         public DateTime? Dddtechean { get; set; }
         public string Cddtobs { get; set; }
 
-        // Relaciones
+        
         public Liquidacion LIQ { get; set; }
-        public List<LiquidacionArticulo> LQA { get; set; } = new List<LiquidacionArticulo>(); // Inicializar la lista
-        public List<Articulo> ART { get; set; } = new List<Articulo>(); // Inicializar la lista
+        public List<LiquidacionArticulo> LQA { get; set; } = new List<LiquidacionArticulo>(); 
+        public List<Articulo> ART { get; set; } = new List<Articulo>();
     }
 }

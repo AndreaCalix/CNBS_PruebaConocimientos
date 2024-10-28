@@ -43,10 +43,10 @@ namespace CNBS_PruebaConocimientos.Controllers
 
                             var datosDeserializados = JArray.Parse(jsonDescomprimido);
 
-                            // Iterar sobre cada objeto en el JArray
+                           
                             foreach (var item in datosDeserializados)
                             {
-                                // Asegurarse de que el item sea un JObject antes de acceder a sus propiedades
+                                
                                 if (item is JObject objeto)
                                 {
                                     // Acceder a ART
@@ -58,11 +58,11 @@ namespace CNBS_PruebaConocimientos.Controllers
 
                                     // Acceder a DDT
                                     var ddt = (JObject)objeto["DDT"];
-                                    Console.WriteLine($"ID de texto: {ddt["Iddtextr"]}");
+                                   // Console.WriteLine($"ID de texto: {ddt["Iddtextr"]}");
 
                                     // Acceder a LIQ
                                     var liq = (JObject)objeto["LIQ"];
-                                    Console.WriteLine($"Liquidación: {liq["Iliq"]}");
+                                    //Console.WriteLine($"Liquidación: {liq["Iliq"]}");
 
                                     // Acceder a LQA
                                     var lqaArray = (JArray)objeto["LQA"];

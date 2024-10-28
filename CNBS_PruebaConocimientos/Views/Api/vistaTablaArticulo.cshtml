@@ -14,33 +14,33 @@
                 <tr>
                     <th>ID</th>
                     <th>Descripción</th>
-                    <!-- Agrega aquí otros encabezados que necesites -->
+                    
                 </tr>
             </thead>
             <tbody>
-                <!-- Las filas se generarán aquí -->
+                
             </tbody>
         </table>
     </div>
 
     <script>
         $(document).ready(function () {
-            // Hacer una llamada AJAX para obtener los datos JSON
+          
             $.ajax({
-                url: '@Url.Action("TuAccion", "ApiController")', // Cambia "TuControlador" al nombre de tu controlador
+                url: '@Url.Action("TuAccion", "ApiController")', 
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    // Recorrer cada elemento en el JSON
+                    
                     $.each(data, function (index, item) {
-                        // Iterar sobre el array ART
+                     
                         $.each(item.ART, function (i, articulo) {
-                            // Agregar una fila a la tabla
+                            
                             $('#tablaArticulos tbody').append(
                                 '<tr>' +
                                 '<td>' + articulo.Iddt + '</td>' +
                                 '<td>' + articulo.Cartdesc + '</td>' +
-                                // Agrega aquí otras celdas que necesites
+                                
                                 '</tr>'
                             );
                         });

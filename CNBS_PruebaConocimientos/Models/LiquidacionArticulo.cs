@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CNBS_PruebaConocimientos.Models // Asegúrate de que el namespace es correcto
+namespace CNBS_PruebaConocimientos.Models 
 {
     public class LiquidacionArticulo
     {

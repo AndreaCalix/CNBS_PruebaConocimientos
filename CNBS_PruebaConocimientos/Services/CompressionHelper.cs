@@ -9,10 +9,10 @@ namespace CNBS_PruebaConocimientos.Services
         {
             try
             {
-                // Convierte el string en Base64 a un array de bytes
+                
                 byte[] datos = Convert.FromBase64String(datosComprimidos);
 
-                // Usar MemoryStream para descomprimir
+                
                 using (MemoryStream ms = new MemoryStream(datos))
                 using (GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress))
                 using (MemoryStream msDescomprimido = new MemoryStream())

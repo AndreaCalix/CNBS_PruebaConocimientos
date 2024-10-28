@@ -17,54 +17,92 @@
 
 <body>
     <h2>Datos</h2>
-    <input type="text" id="busqueda" placeholder="Buscar por Nddtimmioe">
-    <button onclick="buscarDatos()">Buscar</button>
+    <label for="filtroNddtimmioe">Filtrar por Nddtimmioe:</label>
+    <select id="filtroNddtimmioe" onchange="filtrarDatos()">
+        <option value="">Seleccione un Nddtimmioe</option>
+    </select>
     <br>
     <br>
     <div id="resultados"></div>
 </body>
 
-
 <h2>Resultados</h2>
 <div id="resultados"></div>
 
 <script>
+    let datosOriginales = []; 
+    let nddtimmioeOpciones = [];
+
     document.getElementById('formDatos').addEventListener('submit', async function (e) {
-        e.preventDefault(); // Evitar el envío del formulario por defecto
+        e.preventDefault(); 
 
         const fecha = document.getElementById('fecha').value;
         const response = await fetch(`@Url.Action("ProbarConexion", "Api")?fecha=${fecha}`);
 
         if (response.ok) {
             const datos = await response.json();
-            console.log(datos);  // Imprime el JSON recibido para verificar su estructura
+            console.log(datos);  
             mostrarDatos(datos);
         } else {
             document.getElementById('resultados').innerHTML = "Error al obtener datos.";
         }
     });
 
-    let datosOriginales = []; // Variable global para almacenar los datos originales
-
     function mostrarDatos(datos) {
-        datosOriginales = datos; // Guarda los datos originales
-        generarTabla(datos); // Genera la tabla inicial sin filtrar
+        datosOriginales = datos; 
+        generarTabla(datos); 
+        llenarOpcionesNddtimmioe(datos); 
+    }
+
+    function llenarOpcionesNddtimmioe(datos) {
+        const nddtimmioeSet = new Set();
+        datos.forEach(item => {
+            const ddt = item.DDT || {};
+            if (ddt.nddtimmioe) {
+                nddtimmioeSet.add(ddt.nddtimmioe);
+            }
+        });
+
+        nddtimmioeOpciones = Array.from(nddtimmioeSet); 
+
+        const filtroSelect = document.getElementById('filtroNddtimmioe');
+        filtroSelect.innerHTML = '<option value="">Seleccione un Nddtimmioe</option>'; 
+
+        nddtimmioeOpciones.forEach(nddtimmioe => {
+            const option = document.createElement('option');
+            option.value = nddtimmioe;
+            option.textContent = nddtimmioe;
+            filtroSelect.appendChild(option);
+        });
+    }
+
+    function filtrarDatos() {
+        const nddtimmioeSeleccionado = document.getElementById('filtroNddtimmioe').value;
+        const resultadosFiltrados = datosOriginales.filter(item => {
+            const ddt = item.DDT || {};
+            return ddt.nddtimmioe === nddtimmioeSeleccionado || nddtimmioeSeleccionado === '';
+        });
+
+        generarTabla(resultadosFiltrados); 
     }
 
     function generarTabla(datos) {
-        // Genera la estructura de la tabla
+        
         let html = `
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ART - ID</th>
-                        <th>ART - Descripción</th>
-                        <th>DDT - CDDT Agente</th>
-                        <th>DDT - CDDT Grupo</th>
-                        <th>DDT - Nddtimmioe</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ART - ID</th>
+                            <th>ART - Descripción</th>
+                            <th>DDT - CDDT Agente</th>
+                            <th>DDT - CDDT Grupo</th>
+                            <th>DDT - Nddtimmioe</th>
+                            <th>LIQ - ID</th>
+                            <th>LIQ - Cliente</th>
+                            <th>LIQ - Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
 
         datos.forEach(item => {
             const articulos = item.ART;
@@ -76,15 +114,22 @@
                     const ddtCddtage = ddt.cddtage ?? 'N/A';
                     const ddtCddtagr = ddt.cddtagr ?? 'N/A';
                     const ddtNddtimmioe = ddt.nddtimmioe ?? 'N/A';
+                    const liq = item.LIQ || {};
+                    const liqId = liq.iliq ?? 'N/A';
+                    const liqCliente = liq.cliqdop ?? 'N/A';
+                    const liqMonto = liq.mliq ?? '0';
 
                     html += `
-                        <tr>
-                            <td>${artId}</td>
-                            <td>${artDesc}</td>
-                            <td>${ddtCddtage}</td>
-                            <td>${ddtCddtagr}</td>
-                            <td>${ddtNddtimmioe}</td>
-                        </tr>`;
+                            <tr>
+                                <td>${artId}</td>
+                                <td>${artDesc}</td>
+                                <td>${ddtCddtage}</td>
+                                <td>${ddtCddtagr}</td>
+                                <td>${ddtNddtimmioe}</td>
+                                <td>${liqId}</td>
+                                <td>${liqCliente}</td>
+                                <td>${liqMonto}</td>
+                            </tr>`;
                 });
             }
         });
@@ -92,15 +137,4 @@
         html += '</tbody></table>';
         document.getElementById('resultados').innerHTML = html;
     }
-
-    function buscarDatos() {
-        const busqueda = document.getElementById('busqueda').value.toLowerCase();
-        const resultadosFiltrados = datosOriginales.filter(item => {
-            const ddt = item.DDT || {};
-            return ddt.nddtimmioe?.toLowerCase().includes(busqueda);
-        });
-
-        generarTabla(resultadosFiltrados);
-    }
-
 </script>
